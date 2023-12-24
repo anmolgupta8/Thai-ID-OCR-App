@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,6 +10,8 @@
 </head>
 <body>
     <h1>Thai ID Card OCR</h1>
+
+    <h3>Please choose your id card to get its details</h3>
 
     {% if error %}
         <p style="color: red;">{{ error }}</p>
@@ -24,6 +26,59 @@
     {% if result %}
         <h2>OCR Result:</h2>
         <p>{{ result }}</p>
+    {% endif %}
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <title>Thai ID Card OCR</title>
+</head>
+<body>
+    <h1>Thai ID Card OCR</h1>
+
+    <h3>Please choose your ID card to get its details</h3>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="file">Choose a file:</label>
+        <input type="file" name="file" id="file" accept=".png, .jpg, .jpeg">
+        <button type="submit">Upload</button>
+    </form>
+
+    {% if result %}
+        <h2>OCR Result:</h2>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Identification Number</td>
+                <td>{{ result.identification_number }}</td>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td>{{ result.name }}</td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td>{{ result.last_name }}</td>
+            </tr>
+            <tr>
+                <td>Date of Birth</td>
+                <td>{{ result['date-of-birth'] }}</td>
+            </tr>
+        </table>
     {% endif %}
 </body>
 </html>

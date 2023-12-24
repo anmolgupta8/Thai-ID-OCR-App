@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thai ID Card OCR</title>
+</head>
+<body>
+    <h1>Thai ID Card OCR</h1>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="file">Choose a file:</label>
+        <input type="file" name="file" id="file" accept=".png, .jpg, .jpeg">
+        <button type="submit">Upload</button>
+    </form>
+
+    {% if result %}
+        <h2>OCR Result:</h2>
+        <p>{{ result }}</p>
+    {% endif %}
+</body>
+</html>

@@ -5,11 +5,12 @@ import os
 import re
 from datetime import datetime
 import subprocess
+from flask_sqlalchemy import SQLAlchemy
+import sqlite3
 
 pattern_id_no = r'\b\d{1,2} \d{4} \d{5} \d{2} \d\b'
 pattern_name = r'\bName\b\s*(\S.*)'
 pattern_ln = r'\bLastname\b\s*(\S.*)'
-# pattern_dob = r'\b(\d{1,2} \w+\. \d{4})'
 pattern_dob = r'(\d{1,2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\. \d{4})'
 pattern_doi = r'(\d{1,2}\xb0 \w+\. \d{4})'
 date_patterns = [
@@ -20,10 +21,6 @@ date_patterns = [
 pattern_year = r'(\d{4})'
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
-
-# Set Tesseract OCR executable path
-# pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
-# pytesseract.pytesseract.lang = 'eng'
 
 @app.route('/')
 def index():
@@ -47,6 +44,31 @@ def upload():
 
     return render_template('index.html', result=text)
 
+def save_to_database(json_data):
+# Connect to SQLite database (create a new one if it doesn't exist)
+    conn = sqlite3.connect('thai_id.db')
+    # Create a cursor object
+    cursor = conn.cursor()
+    # Create a table (if not exists)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS user_data (
+            identification_number TEXT PRIMARY KEY,
+            name TEXT,
+            last_name TEXT,
+            date_of_birth TEXT
+        )
+    ''')
+    cursor.execute('''
+        INSERT OR REPLACE INTO user_data 
+        (identification_number, name, last_name, date_of_birth) 
+        VALUES (?, ?, ?, ?)
+    ''', (json_data['identification_number'], json_data['name'], json_data['last_name'], json_data['date_of_birth']))
+    # Commit the changes
+    conn.commit()
+
+    # Close the connection
+    conn.close()
+
 def perform_ocr(file_path):
     # Set TESSDATA_PREFIX environment variable
     tesseract_cmd = ['tesseract', file_path, 'output_text.txt', '--psm', '6']
@@ -66,53 +88,15 @@ def perform_ocr(file_path):
     dob = re.search(pattern_dob, text, re.IGNORECASE).group(1)
     dob_fm = datetime.strptime(dob, '%d %b. %Y').strftime('%d/%m/%Y')
 
-    # doi = re.search(pattern_doi, text, re.IGNORECASE).group(1)
-#     doi = re.findall(pattern_doi, text)
-#     years_ = re.findall(pattern_year, text)
-#     years = years_[::-1]
-#     print(years)
-#     # return
-#     y_e = years[0]
-#     y_s=y_e
-#     for i in range(len(years)):
-#         if(i==0):
-#             continue
-#         if(years[i][:2]==y_e[:2]):
-#             y_s=years[i]
-#             break
-#     year_e = 0
-#     # dates = re.findall(date_patterns, text)
-#     for pattern in date_patterns:
-#         match = re.search(pattern, text)
-#         if match:
-#             date_of_issuing = match.group(1)
-#             # Remove degree symbol and any additional symbols or spaces
-#             day, month_str, year = re.match(r'(\d{1,2})[\xb0°]\s(\w+)\. (\d{4})', date_of_issuing).groups()
-# # Convert month abbreviation to numeric month
-#             month_dict = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'}
-#             month_numeric = month_dict[month_str]
-#             print(y_e, y_s)
-#             year_e = int(year) + int(y_e) - int(y_s)
-#             # Format the date as "dd/mm/yyyy"
-#             formatted_date_of_issuing = f"{day}/{month_numeric}/{year}"
-#             print("Found date of issuing:", formatted_date_of_issuing)
-#             doi = formatted_date_of_issuing
-#             doe = f"{day}/{month_numeric}/{year_e}"
-#             break  # Stop searching after the first match
-#         else:
-#             print("Date of issuing not found")
-#         # print(dates)
-#         print(doi, doe)
-        # print(text)
     data = {
         "identification_number": identification_no,
         "name": name,
         "last_name": last_name,
-        "date-of-birth": dob_fm,
-        # "date-of-issue": doi,
-        # "date-of-expiry": doe
+        "date_of_birth": dob_fm,
     }
-    # doi_fm = datetime.strptime(doi, '%d %b. %Y').strftime('%d/%m/%Y')
+    print("Data to be saved to database:", data)
+    # Save OCR result to the database
+    save_to_database(data)
     return data
 
 if __name__ == '__main__':

@@ -31,10 +31,22 @@
         <th>Value</th>
         <th>Actions</th> <!-- Add a column for actions -->
     </tr>
+<<<<<<< HEAD
+=======
+    <!-- <tr>
+        <td>Identification Number</td>
+        <td>{{ result.identification_number }}</td>
+        <td>
+            <button>Update</button>
+            <button>Delete</button>
+        </td>
+    </tr> -->
+>>>>>>> 9551c6c (Connected To Database)
     <tr>
         <td>Identification Number</td>
         <td>{{ result.identification_number }}</td>
         <td>
+<<<<<<< HEAD
             <button onclick="updateField('identification_number')">Update</button>
             <button onclick="deleteField('identification_number')">Delete</button>
         </td>
@@ -45,22 +57,47 @@
         <td>
             <button onclick="updateField('name')">Update</button>
             <button onclick="deleteField('name')">Delete</button>
+=======
+            <form action="/delete" method="post">
+                <input type="hidden" name="identification_number" value="{{ result.identification_number }}">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    <!-- Repeat similar modifications for other rows in the table -->    
+    <tr>
+        <td>First Name</td>
+        <td>{{ result.name }}</td>
+        <td>
+            <button>Update</button>
+            <button>Delete</button>
+>>>>>>> 9551c6c (Connected To Database)
         </td>
     </tr>
     <tr>
         <td>Last Name</td>
         <td>{{ result.last_name }}</td>
         <td>
+<<<<<<< HEAD
             <button onclick="updateField('last_name')">Update</button>
             <button onclick="deleteField('last_name')">Delete</button>
+=======
+            <button>Update</button>
+            <button>Delete</button>
+>>>>>>> 9551c6c (Connected To Database)
         </td>
     </tr>
     <tr>
         <td>Date of Birth</td>
         <td>{{ result['date_of_birth'] }}</td>
         <td>
+<<<<<<< HEAD
             <button onclick="updateField('date-of-birth')">Update</button>
             <button onclick="deleteField('date-of-birth')">Delete</button>
+=======
+            <button>Update</button>
+            <button>Delete</button>
+>>>>>>> 9551c6c (Connected To Database)
         </td>
     </tr>
 </table>

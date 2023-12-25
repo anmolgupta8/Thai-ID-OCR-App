@@ -8,8 +8,6 @@ import subprocess
 from flask_sqlalchemy import SQLAlchemy
 import sqlite3
 
-os.makedirs('uploads', exist_ok=True)
-
 pattern_id_no = r'\b\d{1,2} \d{4} \d{5} \d{2} \d\b'
 pattern_name = r'\bName\b\s*(\S.*)'
 pattern_ln = r'\bLastname\b\s*(\S.*)'

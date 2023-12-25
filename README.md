@@ -1,5 +1,8 @@
 # Thai ID Card OCR App
 
+<img width="1440" alt="Screenshot 2023-12-25 at 11 14 26 PM" src="https://github.com/anmolgupta8/Thai-ID-OCR-App/assets/112186184/c84565fe-2999-4d3c-b9c1-9bcaff2e7560">
+
+
 This Flask web application extracts information from Thai ID cards using Optical Character Recognition (OCR). Users can upload images of Thai ID cards, and the app extracts details such as identification number, name, last name, and date of birth. The information is stored in a SQLite database, and users can view, delete, and update the extracted data through the web interface.
 
 ## Setup Instructions

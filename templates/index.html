@@ -17,11 +17,7 @@
         <p style="color: red;">{{ error }}</p>
     {% endif %}
 
-    <!-- <form action="/upload" method="post" enctype="multipart/form-data">
-        <label for="file">Choose a file:</label>
-        <input type="file" name="file" id="file" accept=".png, .jpg, .jpeg">
-        <button type="submit">Upload</button>
-    </form> -->
+    <!-- Form for uploads -->
 
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
         <label for="file">Choose a file:</label>
@@ -32,7 +28,6 @@
     {% if result %}
     <h2>OCR Result:</h2>
     <table>
-        <!-- ... (existing code) -->
         <tr>
             <td><h3>Identification Number</h3></td>
             <td><h3>First Name</h3></td>
@@ -46,14 +41,14 @@
             <td>{{d.2}}</td>
             <td>{{d.3}}</td>
             <td>
-                <!-- Delete Form -->
+                <!-- Form for delete -->
                 <form action="/delete" method="post">
                     <input type="hidden" name="identification_number" value="{{ d.0 }}">
                     <button type="submit">Delete</button>
                 </form>
             </td>
             <td>
-                <!-- Update Form -->
+                <!-- Form for update -->
                 <form action="/update" method="post">
                     <input type="hidden" name="identification_number" value="{{ d.0 }}">
                     <label for="first_name">First Name:</label>

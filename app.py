@@ -12,7 +12,6 @@ pattern_id_no = r'\b\d{1,2} \d{4} \d{5} \d{2} \d\b'
 pattern_name = r'\bName\b\s*(\S.*)'
 pattern_ln = r'\bLastname\b\s*(\S.*)'
 pattern_dob = r'(\d{1,2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\. \d{4})'
-pattern_doi = r'(\d{1,2}\xb0 \w+\. \d{4})'
 date_patterns = [
     r'(\d{1,2}[\xb0°]\s\w+\. 202\d)',  # Pattern for "24° Jul. 2020"
     r'(\d{1,2}[\xb0°]\s\w+\. \d{4})',  # Pattern for "25° Jun. 1996"
@@ -71,17 +70,17 @@ def upload():
 
     print(result)
 
-    return render_template('index.html', result=result)
+    # return render_template('index.html', result=result)
+    return redirect(url_for('index'))
 
 # ... (existing code)
 
-<<<<<<< HEAD
 def save_to_database(json_data):
 # Connect to SQLite database (create a new one if it doesn't exist)
     conn = sqlite3.connect('thai_id.db')
     # Create a cursor object
     cursor = conn.cursor()
-=======
+
 @app.route('/delete', methods=['POST'])
 def delete():
     identification_number = request.form.get('identification_number')
@@ -116,60 +115,31 @@ def save_to_database(json_data):
     conn = sqlite3.connect('thai_id.db')
     # Create a cursor object
     cursor = conn.cursor()
-<<<<<<< HEAD
-
->>>>>>> 9551c6c (Connected To Database)
-=======
->>>>>>> a00eec5 (Delete And Update)
     # Create a table (if not exists)
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS user_data (
+    cursor.execute('''CREATE TABLE IF NOT EXISTS user_data (
             identification_number TEXT PRIMARY KEY,
             name TEXT,
             last_name TEXT,
             date_of_birth TEXT
         )
     ''')
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
     # Insert or replace into the user_data table
->>>>>>> 9551c6c (Connected To Database)
-=======
->>>>>>> a00eec5 (Delete And Update)
     cursor.execute('''
         INSERT OR REPLACE INTO user_data 
         (identification_number, name, last_name, date_of_birth) 
         VALUES (?, ?, ?, ?)
-<<<<<<< HEAD
-<<<<<<< HEAD
     ''', (json_data['identification_number'], json_data['name'], json_data['last_name'], json_data['date_of_birth']))
-=======
     ''', (
         json_data['identification_number'],
         json_data['name'],
         json_data['last_name'],
         json_data['date_of_birth']
-    ))
-
->>>>>>> 9551c6c (Connected To Database)
-=======
-    ''', (json_data['identification_number'], json_data['name'], json_data['last_name'], json_data['date_of_birth']))
->>>>>>> a00eec5 (Delete And Update)
-    # Commit the changes
+    ))''', (json_data['identification_number'], json_data['name'], json_data['last_name'], json_data['date_of_birth'])
     conn.commit()
 
     # Close the connection
     conn.close()
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> 9551c6c (Connected To Database)
-=======
->>>>>>> a00eec5 (Delete And Update)
 def perform_ocr(file_path):
     # Set TESSDATA_PREFIX environment variable
     tesseract_cmd = ['tesseract', file_path, 'output_text.txt', '--psm', '6']
@@ -183,11 +153,28 @@ def perform_ocr(file_path):
     print("Raw Tesseract Output:")
     print(text)
 
-    identification_no = re.search(pattern_id_no, text).group()
-    name = re.search(pattern_name, text, re.IGNORECASE).group(1).strip()
-    last_name = re.search(pattern_ln, text, re.IGNORECASE).group(1).strip()
-    dob = re.search(pattern_dob, text, re.IGNORECASE).group(1)
-    dob_fm = datetime.strptime(dob, '%d %b. %Y').strftime('%d/%m/%Y')
+    temp1 = re.search(pattern_id_no, text)
+    if(temp1) : 
+        identification_no = temp1.group()
+        identification_no = identification_no.replace('O', '0')
+    else : identification_no = "Could Not Extract"
+    temp2 = re.search(pattern_name, text, re.IGNORECASE)
+    if temp2 :
+        name = temp2.group(1).strip()
+    else :
+        name = "Could Not Extract"
+    temp3 = re.search(pattern_ln, text, re.IGNORECASE)
+    if temp3:
+        last_name = temp3.group(1).strip()
+    else :
+        last_name = "Could Not Extract"
+    temp4 = re.search(pattern_dob, text, re.IGNORECASE)
+    if temp4 :
+        dob = temp4.group(1)
+        dob_fm = datetime.strptime(dob, '%d %b. %Y').strftime('%d/%m/%Y')
+    else :
+        dob_fm = "Could Not Extract"
+        
 
     data = {
         "identification_number": identification_no,

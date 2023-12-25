@@ -17,144 +17,28 @@
         <p style="color: red;">{{ error }}</p>
     {% endif %}
 
-    <form action="/upload" method="post" enctype="multipart/form-data">
+    <!-- <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="file">Choose a file:</label>
+        <input type="file" name="file" id="file" accept=".png, .jpg, .jpeg">
+        <button type="submit">Upload</button>
+    </form> -->
+
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
         <label for="file">Choose a file:</label>
         <input type="file" name="file" id="file" accept=".png, .jpg, .jpeg">
         <button type="submit">Upload</button>
     </form>
-
-<<<<<<< HEAD
-{% if result %}
-<h2>OCR Result:</h2>
-<table>
-    <tr>
-        <th>Field</th>
-        <th>Value</th>
-        <th>Actions</th> <!-- Add a column for actions -->
-    </tr>
-<<<<<<< HEAD
-=======
-    <!-- <tr>
-        <td>Identification Number</td>
-        <td>{{ result.identification_number }}</td>
-        <td>
-            <button>Update</button>
-            <button>Delete</button>
-        </td>
-    </tr> -->
->>>>>>> 9551c6c (Connected To Database)
-    <tr>
-        <td>Identification Number</td>
-        <td>{{ result.identification_number }}</td>
-        <td>
-<<<<<<< HEAD
-            <button onclick="updateField('identification_number')">Update</button>
-            <button onclick="deleteField('identification_number')">Delete</button>
-        </td>
-    </tr>
-    <tr>
-        <td>Name</td>
-        <td>{{ result.name }}</td>
-        <td>
-            <button onclick="updateField('name')">Update</button>
-            <button onclick="deleteField('name')">Delete</button>
-=======
-            <form action="/delete" method="post">
-                <input type="hidden" name="identification_number" value="{{ result.identification_number }}">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
-    <!-- Repeat similar modifications for other rows in the table -->    
-    <tr>
-        <td>First Name</td>
-        <td>{{ result.name }}</td>
-        <td>
-            <button>Update</button>
-            <button>Delete</button>
->>>>>>> 9551c6c (Connected To Database)
-        </td>
-    </tr>
-    <tr>
-        <td>Last Name</td>
-        <td>{{ result.last_name }}</td>
-        <td>
-<<<<<<< HEAD
-            <button onclick="updateField('last_name')">Update</button>
-            <button onclick="deleteField('last_name')">Delete</button>
-=======
-            <button>Update</button>
-            <button>Delete</button>
->>>>>>> 9551c6c (Connected To Database)
-        </td>
-    </tr>
-    <tr>
-        <td>Date of Birth</td>
-        <td>{{ result['date_of_birth'] }}</td>
-        <td>
-<<<<<<< HEAD
-            <button onclick="updateField('date-of-birth')">Update</button>
-            <button onclick="deleteField('date-of-birth')">Delete</button>
-=======
-            <button>Update</button>
-            <button>Delete</button>
->>>>>>> 9551c6c (Connected To Database)
-        </td>
-    </tr>
-</table>
-{% endif %}
-=======
-    <!-- ... (existing code)
-
-    {% if result %}
-    <h2>OCR Result:</h2>
-    <table>
-        <tr>
-            <th>Field</th>
-            <th>Value</th>
-        </tr>
-        <tr>
-            <td>Identification Number</td>
-            <td>{{ result.text.identification_number }}</td>
-        </tr>
-        <tr>
-            <td>First Name</td>
-            <td>{{ result.text.name }}</td>
-        </tr>
-        <tr>
-            <td>Last Name</td>
-            <td>{{ result.text.last_name }}</td>
-        </tr>
-        <tr>
-            <td>Date of Birth</td>
-            <td>{{ result.text['date_of_birth'] }}</td>
-        </tr>
-    </table>
-
-    <table>
-        <tr>
-            <td>Identification Number</td>
-            <td>First Name</td>
-            <td>Last Name</td>
-            <td>Date Of Birth</td>
-        </tr>
-        {% for d in result.data %}
-        <tr>
-            <td>{{d.0}}</td>
-            <td>{{d.1}}</td>
-            <td>{{d.2}}</td>
-            <td>{{d.3}}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    {% endif %} -->
-
-
+    
     {% if result %}
     <h2>OCR Result:</h2>
     <table>
         <!-- ... (existing code) -->
+        <tr>
+            <td><h3>Identification Number</h3></td>
+            <td><h3>First Name</h3></td>
+            <td><h3>Last Name</h3></td>
+            <td><h3>Date Of Birth</h3></td>
+        </tr>
         {% for d in result.data %}
         <tr>
             <td>{{d.0}}</td>
@@ -186,9 +70,6 @@
     </table>
 
     {% endif %}
-
-
->>>>>>> a00eec5 (Delete And Update)
 
 </body>
 </html>

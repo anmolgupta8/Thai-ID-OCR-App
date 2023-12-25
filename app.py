@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for, redirect
 from PIL import Image
 import pytesseract
 import os
@@ -22,9 +22,31 @@ pattern_year = r'(\d{4})'
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
+conn = sqlite3.connect('thai_id.db')
+cursor = conn.cursor()
+cursor.execute('SELECT * FROM user_data')
+rows = cursor.fetchall()
+
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Fetch data from the database
+    conn = sqlite3.connect('thai_id.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM user_data')
+    rows = cursor.fetchall()
+    conn.close()
+
+    # Pass data to the template
+    result = {
+        'text': {},  # You may need to update this if you have any specific data to display
+        'data': rows,
+    }
+
+    return render_template('index.html', result=result)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -42,7 +64,16 @@ def upload():
     # Perform OCR
     text = perform_ocr(file_path)
 
-    return render_template('index.html', result=text)
+    result = {
+        'text' : text,
+        'data' : rows,
+    }
+
+    print(result)
+
+    return render_template('index.html', result=result)
+
+# ... (existing code)
 
 <<<<<<< HEAD
 def save_to_database(json_data):
@@ -53,39 +84,43 @@ def save_to_database(json_data):
 =======
 @app.route('/delete', methods=['POST'])
 def delete():
-    field = request.form.get('field')
-    value = request.form.get('value')
-
-    if field and value:
-        # Delete the record from the database based on the specified field and value
-        delete_from_database(field, value)
-        return render_template('index.html', result=None)
-    else:
-        return render_template('index.html', error='Invalid request to delete record')
-
-
-def delete_from_database(field, value):
-    # Connect to SQLite database
+    identification_number = request.form.get('identification_number')
     conn = sqlite3.connect('thai_id.db')
     cursor = conn.cursor()
-
-    # Delete the record with the specified field and value
-    cursor.execute(f'DELETE FROM user_data WHERE {field} = ?', (value,))
-
-    # Commit the changes
+    cursor.execute('DELETE FROM user_data WHERE identification_number = ?', (identification_number,))
     conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
 
-    # Close the connection
+@app.route('/update', methods=['POST'])
+def update():
+    identification_number = request.form.get('identification_number')
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+    date_of_birth = request.form.get('date_of_birth')
+
+    conn = sqlite3.connect('thai_id.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE user_data 
+        SET name = ?, last_name = ?, date_of_birth = ? 
+        WHERE identification_number = ?
+    ''', (first_name, last_name, date_of_birth, identification_number))
+    conn.commit()
     conn.close()
 
-def save_to_database(json_data):
-    # Connect to SQLite database (create a new one if it doesn't exist)
-    conn = sqlite3.connect('thai_id.db')
+    return redirect(url_for('index'))
 
+def save_to_database(json_data):
+# Connect to SQLite database (create a new one if it doesn't exist)
+    conn = sqlite3.connect('thai_id.db')
     # Create a cursor object
     cursor = conn.cursor()
+<<<<<<< HEAD
 
 >>>>>>> 9551c6c (Connected To Database)
+=======
+>>>>>>> a00eec5 (Delete And Update)
     # Create a table (if not exists)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS user_data (
@@ -96,14 +131,18 @@ def save_to_database(json_data):
         )
     ''')
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
     # Insert or replace into the user_data table
 >>>>>>> 9551c6c (Connected To Database)
+=======
+>>>>>>> a00eec5 (Delete And Update)
     cursor.execute('''
         INSERT OR REPLACE INTO user_data 
         (identification_number, name, last_name, date_of_birth) 
         VALUES (?, ?, ?, ?)
+<<<<<<< HEAD
 <<<<<<< HEAD
     ''', (json_data['identification_number'], json_data['name'], json_data['last_name'], json_data['date_of_birth']))
 =======
@@ -115,6 +154,9 @@ def save_to_database(json_data):
     ))
 
 >>>>>>> 9551c6c (Connected To Database)
+=======
+    ''', (json_data['identification_number'], json_data['name'], json_data['last_name'], json_data['date_of_birth']))
+>>>>>>> a00eec5 (Delete And Update)
     # Commit the changes
     conn.commit()
 
@@ -122,9 +164,12 @@ def save_to_database(json_data):
     conn.close()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 9551c6c (Connected To Database)
+=======
+>>>>>>> a00eec5 (Delete And Update)
 def perform_ocr(file_path):
     # Set TESSDATA_PREFIX environment variable
     tesseract_cmd = ['tesseract', file_path, 'output_text.txt', '--psm', '6']

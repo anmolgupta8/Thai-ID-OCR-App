@@ -23,6 +23,7 @@
         <button type="submit">Upload</button>
     </form>
 
+<<<<<<< HEAD
 {% if result %}
 <h2>OCR Result:</h2>
 <table>
@@ -102,6 +103,92 @@
     </tr>
 </table>
 {% endif %}
+=======
+    <!-- ... (existing code)
+
+    {% if result %}
+    <h2>OCR Result:</h2>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>Identification Number</td>
+            <td>{{ result.text.identification_number }}</td>
+        </tr>
+        <tr>
+            <td>First Name</td>
+            <td>{{ result.text.name }}</td>
+        </tr>
+        <tr>
+            <td>Last Name</td>
+            <td>{{ result.text.last_name }}</td>
+        </tr>
+        <tr>
+            <td>Date of Birth</td>
+            <td>{{ result.text['date_of_birth'] }}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td>Identification Number</td>
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Date Of Birth</td>
+        </tr>
+        {% for d in result.data %}
+        <tr>
+            <td>{{d.0}}</td>
+            <td>{{d.1}}</td>
+            <td>{{d.2}}</td>
+            <td>{{d.3}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% endif %} -->
+
+
+    {% if result %}
+    <h2>OCR Result:</h2>
+    <table>
+        <!-- ... (existing code) -->
+        {% for d in result.data %}
+        <tr>
+            <td>{{d.0}}</td>
+            <td>{{d.1}}</td>
+            <td>{{d.2}}</td>
+            <td>{{d.3}}</td>
+            <td>
+                <!-- Delete Form -->
+                <form action="/delete" method="post">
+                    <input type="hidden" name="identification_number" value="{{ d.0 }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+            <td>
+                <!-- Update Form -->
+                <form action="/update" method="post">
+                    <input type="hidden" name="identification_number" value="{{ d.0 }}">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" name="first_name" value="{{ d.1 }}" required>
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" name="last_name" value="{{ d.2 }}" required>
+                    <label for="date_of_birth">Date of Birth:</label>
+                    <input type="text" name="date_of_birth" value="{{ d.3 }}" required>
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% endif %}
+
+
+>>>>>>> a00eec5 (Delete And Update)
 
 </body>
 </html>

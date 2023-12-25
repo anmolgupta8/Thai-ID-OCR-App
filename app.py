@@ -189,6 +189,6 @@ def perform_ocr(file_path):
     save_to_database(data)
     return data
 
-# if __name__ == '__main__':
-#     os.makedirs('uploads', exist_ok=True)
-#     app.run(debug=True)
+if __name__ == '__main__':
+    os.makedirs('uploads', exist_ok=True)
+    app.run(debug=True)
